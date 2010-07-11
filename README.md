@@ -3,9 +3,18 @@ Gexf4js - Powered by Protovis
 
 Usage
 ------------
-Insert an IFRAME into your website, appending the GEXF File to the querystring of the gexf4js.html file. Check out the code below.
+Insert an IFRAME into your website, appending the following to the querystring:
 
-	<iframe id="gexf4js" src="gexf4js.html?url=demo.gexf" border="0" frameborder="0"></iframe>
+* __url__ - URL to the GEXF File
+* __type__ - The visualization type: graph, arc, matrix
+
+Check out the code below.
+
+	<iframe id="gexf4js" src="gexf4js.html?url=demo.gexf&type=graph" border="0" frameborder="0"></iframe>
+
+	<iframe id="gexf4js" src="gexf4js.html?url=demo.gexf&type=arc" border="0" frameborder="0"></iframe>
+
+	<iframe id="gexf4js" src="gexf4js.html?url=demo.gexf&type=matrix" border="0" frameborder="0"></iframe>
 
 Installing
 --------
@@ -34,5 +43,3 @@ Road Map
 * Works on ALL Browsers
 * Graph Properties - Size, Interaction
 * Node Properties - Labels, Colors, Mouseovers
-* Protovis Visualization - Matrix Diagram Implementation
-* Protovis Visualization - Arc Diagram Implementation
