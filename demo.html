@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>untitled</title>
+		<style>
+			* {
+				color: #333;
+				font-size: 100%;
+				font-family: Helvetica, Arial, "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+			}
+			
+			h1 {
+				font-size: 200%;
+			}
+			
+			h2 {
+				font-size: 150%;
+			}
+			
+			#code {
+				margin: 10px;
+				padding: 10px;
+				font-family: Courier;
+				font-size: 80%;
+				background-color: #ccc;
+				border: 1px solid #666;
+			}
+			
+			#gexf4js {
+				border: 5px solid #dddddd;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+				width: 600px;
+				height: 600px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Gexf4js - Powered by Protovis</h1>
+		
+		<h2>Usage</h2>
+		Insert an IFRAME into your website, appending the GEXF File to the querystring of the gexf4js.html file. Check out the code below.
+		
+		<br><br>
+		
+		<span id="code">
+			&lt;iframe id=&quot;gexf4js&quot; src=&quot;gexf4js.html?url=demo.gexf&quot; border=&quot;0&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+		</span>
+		
+		<h2>Files</h2>
+		<ul>
+			<li>gexf4js.html - use in an IFRAME. The URL to the GEXF file in the querystring (?url=).</li>
+			<li>jquery-1.4.2.min.js - jQuery Library</li>
+			<li>protovis-r3.2js - Protovis Library</li>
+			<li>demo.gexf - OPTIONAL - the GEXF File to load</li>
+		</ul>
+			
+		<iframe id="gexf4js" src="gexf4js.html?url=demo.gexf" border="0" frameborder="0"></iframe>
+
+	</body>
+</html>

@@ -1,0 +1,97 @@
+<html>
+	<head>
+		<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="protovis-r3.2.js"></script>
+		
+		<style type="text/css">
+			body {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript+protovis">
+			var gexf4js = {};
+				gexf4js.nodes = [];
+				gexf4js.links = [];
+				gexf4js.nodeIdMap = [];
+
+			function drawGexf(gexfUrl) {
+				$.ajax({
+					type: "GET",
+					url: gexfUrl,
+					dataType: "xml",
+					success: xmlParser
+				});
+			}
+
+			function xmlParser(xml) {
+				$(xml).find('node').each(function() {
+					var id = $(this).attr('id');
+					var label = $(this).attr('label');
+					gexf4js.nodeIdMap[id] = gexf4js.nodes.length;
+					gexf4js.nodes.push({
+						nodeName: label,
+						group: 1
+					});
+				});
+
+				$(xml).find('edge').each(function() {
+					var s = $(this).attr('source');
+					var t = $(this).attr('target');
+					s = gexf4js.nodeIdMap[s];
+					t = gexf4js.nodeIdMap[t];
+					gexf4js.links.push({
+						source: s,
+						target: t,
+						value: 1
+					});
+				});
+
+				var w = document.body.clientWidth,
+					h = document.body.clientHeight,
+					colors = pv.Colors.category19();
+
+				var vis = new pv.Panel()
+					.width(w)
+					.height(h)
+					.fillStyle("white")
+					.event("mousedown", pv.Behavior.pan())
+					.event("mousewheel", pv.Behavior.zoom())
+
+				var force = vis.add(pv.Layout.Force)
+					.nodes(gexf4js.nodes)
+					.links(gexf4js.links);
+
+				force.link.add(pv.Line);
+
+				force.node.add(pv.Dot)
+					.size(function(d)(d.linkDegree + 4) * Math.pow(this.scale, -1.5))
+					.fillStyle(function(d) d.fix ? "brown": colors(d.group))
+					.strokeStyle(function() this.fillStyle().darker())
+					.lineWidth(1)
+					.title(function(d) d.nodeName)
+					.event("mousedown", pv.Behavior.drag())
+					.event("drag", force);
+
+				vis.render();
+			}
+
+			function getQueryString() {
+			    var assoc = new Array();
+			    var queryString = unescape(location.search.substring(1));
+			    var keyValues = queryString.split('&');
+			    for (var i in keyValues) {
+			        var key = keyValues[i].split('=');
+			        assoc[key[0]] = key[1];
+			    }
+			    return assoc;
+			}
+
+			var qsArray = getQueryString(),
+				gexfUrl = qsArray['url'];
+
+			drawGexf(gexfUrl);
+		</script>
+	</body>
+</html>
