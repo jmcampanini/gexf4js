@@ -12,11 +12,13 @@
 	<body>
 		<script type="text/javascript+protovis">
 			var gexf4js = {};
+				gexf4js.type = 'graph'; // default to graph
 				gexf4js.nodes = [];
 				gexf4js.links = [];
 				gexf4js.nodeIdMap = [];
 
-			function drawGexf(gexfUrl) {
+			function drawGexf(gexfUrl, vizType) {
+				gexf4js.type = vizType;
 				$.ajax({
 					type: "GET",
 					url: gexfUrl,
@@ -47,7 +49,28 @@
 						value: 1
 					});
 				});
-
+				
+				_loadViz();
+			}
+			
+			function _loadViz() {
+				switch (gexf4js.type) {						
+					case 'arc':
+						_loadViz_arc();
+						break;
+					
+					case 'matrix':
+						_loadViz_matrix();
+						break;
+						
+					default:
+					case 'graph':
+						_loadViz_graph();
+						break;
+				}
+			}
+			
+			function _loadViz_graph() {
 				var w = document.body.clientWidth,
 					h = document.body.clientHeight,
 					colors = pv.Colors.category19();
@@ -76,6 +99,65 @@
 
 				vis.render();
 			}
+			
+			function _loadViz_arc() {
+				var w = document.body.clientWidth,
+					h = document.body.clientHeight;
+				
+				var vis = new pv.Panel()
+					.width(w)
+					.height(h - 120)
+					.bottom(120);
+
+				var arc = vis.add(pv.Layout.Arc)
+					.nodes(gexf4js.nodes)
+					.links(gexf4js.links)
+					.sort(function(a, b) a.group == b.group
+						? b.linkDegree - a.linkDegree
+						: b.group - a.group);
+
+				arc.link.add(pv.Line);
+
+				arc.node.add(pv.Dot)
+					.size(function(d) d.linkDegree + 4)
+					.fillStyle(pv.Colors.category19().by(function(d) d.group))
+					.strokeStyle(function() this.fillStyle().darker());
+
+				arc.label.add(pv.Label)
+
+				vis.render();				
+			}
+			
+			function _loadViz_matrix() {
+				var w = document.body.clientWidth,
+					h = document.body.clientHeight,
+					color = pv.Colors.category19().by(function(d) d.group);
+
+				var vis = new pv.Panel()
+					.width(w - 90)
+					.height(h - 90)
+					.top(90)
+					.left(90);
+
+				var layout = vis.add(pv.Layout.Matrix)
+					.nodes(gexf4js.nodes)
+					.links(gexf4js.links)
+					.sort(function(a, b) b.group - a.group);
+
+				layout.link.add(pv.Bar)
+					.fillStyle(function(l) l.linkValue
+						? ((l.targetNode.group == l.sourceNode.group)
+							? color(l.sourceNode)
+							: "#555")
+						: "#eee")
+					.antialias(false)
+					.lineWidth(1);
+
+				layout.label.add(pv.Label)
+					.textStyle(color);
+
+				vis.render();
+			}
 
 			function getQueryString() {
 			    var assoc = new Array();
@@ -89,9 +171,10 @@
 			}
 
 			var qsArray = getQueryString(),
-				gexfUrl = qsArray['url'];
+				gexfUrl = qsArray['url'],
+				vizType = qsArray['type'] != null ? qsArray['type'] : 'graph';
 
-			drawGexf(gexfUrl);
+			drawGexf(gexfUrl, vizType);
 		</script>
 	</body>
 </html>
